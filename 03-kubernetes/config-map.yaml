@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: author-config-map
+  namespace: myapp-namespace
+data:
+  author: avdeevaml

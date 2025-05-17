@@ -1,0 +1,35 @@
+events {
+    worker_connections 1024;
+}
+
+# Конфигурация upstream для определения группы бэкенд-серверов
+http {
+    upstream backend {
+        server localhost:8001;
+        server localhost:8002;
+        server localhost:8003;
+    }
+
+    # Основная конфигурация сервера
+    server {
+        listen 8000;
+        
+        # Обработчик для всех запросов
+        location / {
+            # Перенаправление на бэкенд-серверы
+            proxy_pass http://backend;
+            
+            # Дополнительные заголовки для корректной работы проксирования
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            
+            # Таймауты для предотвращения зависаний
+            proxy_connect_timeout 60s;
+            proxy_send_timeout 60s;
+            proxy_read_timeout 60s;
+        }
+    }
+
+
+}
